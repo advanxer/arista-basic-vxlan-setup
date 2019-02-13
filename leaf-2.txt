@@ -1,0 +1,59 @@
+LEAF-2#sh run
+! Command: show running-config
+! device: LEAF-2 (vEOS, EOS-4.21.1.1F)
+!
+! boot system flash:/vEOS-lab.swi
+!
+transceiver qsfp default-mode 4x10G
+!
+hostname LEAF-2
+!
+spanning-tree mode mstp
+!
+no aaa root
+!
+vlan 11
+!
+interface Ethernet1
+   no switchport
+   ip address 172.16.0.6/30
+!
+interface Ethernet2
+   no switchport
+   ip address 172.16.0.14/30
+!
+interface Ethernet3
+   switchport access vlan 11
+!
+interface Loopback0
+   description router-id
+   ip address 10.0.1.22/32
+!
+interface Management1
+!
+interface Vlan11
+   description service01-gateway
+   ip address 192.168.11.3/24
+   ip virtual-router address 192.168.11.1
+!
+interface Vxlan1
+   vxlan source-interface Loopback0
+   vxlan udp-port 4789
+   vxlan vlan 11 vni 1011
+   vxlan vlan 11 flood vtep 10.0.1.21
+!
+ip virtual-router mac-address 00:1c:aa:aa:aa:aa
+!
+ip routing
+!
+router bgp 65022
+   router-id 10.0.1.22
+   distance bgp 20 200 200
+   maximum-paths 2 ecmp 2
+   neighbor 172.16.0.5 remote-as 65020
+   neighbor 172.16.0.5 maximum-routes 12000
+   neighbor 172.16.0.13 remote-as 65020
+   neighbor 172.16.0.13 maximum-routes 12000
+   network 10.0.1.22/32
+!
+end
