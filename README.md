@@ -1,2 +1,1 @@
-# labs
-Config repository for testbed and labs
+#Basic VXLAN configuration sample using Arista vEOS.
